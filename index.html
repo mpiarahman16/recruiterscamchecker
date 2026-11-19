@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recruiter Scam Checker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#fff; --ink:#1a1d23; --muted:#5f6673; --line:#e3e6eb;
+    --accent:#2457d6; --red:#c62f2f; --redbg:#fdecec; --amber:#a86400; --amberbg:#fff4e0;
+    --green:#1f7a4a; --greenbg:#e6f5ec;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#121418;--card:#1b1e24;--ink:#e8eaee;--muted:#9aa1ad;--line:#2c3038;
+      --accent:#6d93ff;--red:#ff7b7b;--redbg:#3a1c1e;--amber:#ffc266;--amberbg:#3a2c14;--green:#6fd59b;--greenbg:#173326;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:26px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 22px;font-size:15px}
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+  @media (max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:20px}
+  h2{font-size:16px;margin:0 0 10px}
+  label.t{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+  .hint{font-size:13px;color:var(--muted);margin:0 0 6px}
+  textarea,input[type=text]{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:10px;font:inherit;font-size:14px}
+  textarea{min-height:120px;resize:vertical}
+  .checks{display:grid;gap:6px;margin-top:6px}
+  .q{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+  .q:first-child{border-top:none}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex-shrink:0}
+  .seg button{border:none;background:transparent;color:var(--muted);padding:5px 10px;font:inherit;font-size:13px;cursor:pointer}
+  .seg button.on{background:var(--accent);color:#fff}
+  .btns{display:flex;gap:10px;margin-top:14px}
+  .btn{border:none;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer}
+  .primary{background:var(--accent);color:#fff}
+  .ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+  .verdict{border-radius:12px;padding:18px 20px;margin-bottom:14px}
+  .verdict .big{font-size:22px;font-weight:700}
+  .meter{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:10px 0 4px}
+  .meter div{height:100%;transition:width .3s}
+  .v-red{background:var(--redbg);color:var(--red)} .v-amber{background:var(--amberbg);color:var(--amber)} .v-green{background:var(--greenbg);color:var(--green)} .v-none{background:var(--line);color:var(--muted)}
+  ul.f{list-style:none;padding:0;margin:0}
+  ul.f li{padding:8px 10px;border-radius:8px;margin-bottom:6px;font-size:14px}
+  ul.f li b{display:block}
+  ul.f li span{color:var(--ink);opacity:.85}
+  .fr{background:var(--redbg)} .fr b{color:var(--red)}
+  .fa{background:var(--amberbg)} .fa b{color:var(--amber)}
+  .fg{background:var(--greenbg)} .fg b{color:var(--green)}
+  ol.steps{padding-left:20px;margin:0;font-size:14px}
+  ol.steps li{margin-bottom:8px}
+  .small{font-size:12px;color:var(--muted);margin-top:10px}
+  a{color:var(--accent)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  @media (max-width:560px){.two{grid-template-columns:1fr}}
+  .lk{margin-top:14px}
+  .lk h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:14px 0 6px}
+  .lk a.chip{display:flex;justify-content:space-between;align-items:center;gap:8px;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:9px 12px;margin-bottom:6px;color:var(--ink);font-size:14px;background:var(--bg)}
+  .lk a.chip:hover{border-color:var(--accent)}
+  .lk a.chip small{color:var(--muted);font-size:12px}
+  .lk a.chip .arr{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Recruiter Scam Checker</h1>
+  <p class="sub">Paste the recruiter's LinkedIn profile and their message, answer a few quick questions, and get a red-flag score. Everything runs in your browser; nothing is sent anywhere.</p>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>1. Paste what you have</h2>
+        <label class="t" for="profile">Recruiter's LinkedIn profile</label>
+        <p class="hint">On their profile, press Ctrl/Cmd + A, then copy, then paste here. Messy text is fine.</p>
+        <textarea id="profile" placeholder="Name · Headline · Location · Experience · Connections..."></textarea>
+
+        <label class="t" for="msg">Their message or email</label>
+        <p class="hint">InMail, email, text, or WhatsApp message — whatever they sent you.</p>
+        <textarea id="msg" placeholder="Hi, I came across your profile and you'd be a perfect fit..."></textarea>
+      </div>
+
+      <div class="card">
+        <h2>2. Check the job they're offering</h2>
+        <p class="hint">Fill in what the recruiter told you about the role. Then look it up to see whether it really exists.</p>
+        <div class="two">
+          <div><label class="t" for="jobtitle">Job title</label>
+          <input type="text" id="jobtitle" placeholder="e.g. Senior Product Manager"></div>
+          <div><label class="t" for="company">Company</label>
+          <input type="text" id="company" placeholder="e.g. Capital One"></div>
+          <div><label class="t" for="joblocation">Location</label>
+          <input type="text" id="joblocation" placeholder="e.g. New York, NY or Remote"></div>
+          <div><label class="t" for="jobpay">Pay they mentioned</label>
+          <input type="text" id="jobpay" placeholder="e.g. $65/hr or $180,000"></div>
+        </div>
+        <label class="t" for="joblink">Link they sent for the job or application</label>
+        <input type="text" id="joblink" placeholder="https://...">
+        <label class="t" for="jobdesc">Job description (optional)</label>
+        <textarea id="jobdesc" placeholder="Paste the job description or details they shared..."></textarea>
+        <div class="btns"><button class="btn ghost" id="lookup">Look up this job</button></div>
+        <div id="lookupOut"></div>
+      </div>
+
+      <div class="card">
+        <h2>3. Quick checks on LinkedIn</h2>
+        <p class="hint">On their profile, open the "…" (More) menu and choose <b>About this profile</b>. It shows when they joined, verification, and when the photo changed.</p>
+        <div class="checks" id="checks"></div>
+        <div class="btns">
+          <button class="btn primary" id="run">Check recruiter</button>
+          <button class="btn ghost" id="clear">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div id="out">
+        <div class="verdict v-none"><div class="big">No check yet</div><div>Paste the profile and message, then press <b>Check recruiter</b>.</div></div>
+      </div>
+
+      <div class="card">
+        <h2>Before you reply: verify in 5 minutes</h2>
+        <ol class="steps">
+          <li><b>Go to the company yourself.</b> Find the job on the company's own careers page, not through a link they sent.</li>
+          <li><b>Ask for an email from the company domain</b> (name@company.com). Real recruiters can do this; scammers stall.</li>
+          <li><b>Check that they work there.</b> Open the company's LinkedIn page, go to People, and search for their name.</li>
+          <li><b>Reverse-search the photo</b> with Google Lens or TinEye. Stock or AI-generated faces are a common sign.</li>
+          <li><b>Look at "About this profile."</b> If they joined recently, aren't verified, and changed the photo recently, be suspicious.</li>
+          <li><b>Never share</b> your SSN, bank details, or ID scans before a signed offer. Never pay for equipment or training, and never deposit a check they send.</li>
+        </ol>
+        <p class="small">To report a fake: on their profile, open "…" and choose Report. In the US you can also report at reportfraud.ftc.gov.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {id:'verified', text:'Do they have a verification badge (checkmark) for identity or workplace?', yes:-15, no:8, yesNote:['g','Verified identity or workplace','LinkedIn has confirmed who they are or where they work.'], noNote:['a','Not verified','Many real recruiters are verified now, so its absence is worth noting.']},
+  {id:'newacct', text:'Did they join LinkedIn in the last 12 months?', yes:18, no:-5, yesNote:['r','Account is new','Fake recruiter accounts are usually only weeks or months old.']},
+  {id:'photo', text:'Does the photo look like a stock photo, AI-generated, or overly polished?', yes:15, no:0, yesNote:['r','Suspicious photo','Run a reverse image search to confirm.']},
+  {id:'mutual', text:'Do you share any real mutual connections (people you actually know)?', yes:-10, no:4, yesNote:['g','Real mutual connections','You can ask a mutual connection whether they know this person.']},
+  {id:'activity', text:'Do they have real activity (posts, comments, recommendations) going back years?', yes:-10, no:8, yesNote:['g','Long activity history','Real recruiters usually leave a trail of posts and job shares.'], noNote:['a','Little or no activity','Empty activity is common on fake profiles.']},
+  {id:'listedjob', text:'Is the job also posted on the company\'s own careers site?', yes:-12, no:12, yesNote:['g','Job exists on the official site','This is a strong sign the role is real.'], noNote:['r','Job not on the official careers site','Scammers often invent roles at real companies.']},
+];
+const answers = {};
+
+function renderChecks(){
+  const box = document.getElementById('checks');
+  box.innerHTML = QUESTIONS.map(q=>`
+    <div class="q"><div>${q.text}</div>
+      <div class="seg" data-id="${q.id}">
+        <button data-v="yes">Yes</button><button data-v="no">No</button><button data-v="unk" class="on">?</button>
+      </div></div>`).join('');
+  box.querySelectorAll('.seg').forEach(seg=>{
+    seg.addEventListener('click',e=>{
+      const b=e.target.closest('button'); if(!b) return;
+      seg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); answers[seg.dataset.id]=b.dataset.v;
+    });
+  });
+}
+
+// Text rules: [regex, points, level, title, explanation, source('p'|'m'|'b')]
+const RULES = [
+  [/\b(whats ?app|telegram|signal app|signal\b|wechat|google hangouts|hangouts|wickr|text me at|kik)\b/i, 25,'r','Wants to move the conversation off LinkedIn','Moving you to WhatsApp, Telegram, Signal or a text chat is the most common scam pattern.','m'],
+  [/\b[\w.+-]+@(gmail|yahoo|outlook|hotmail|aol|proton(mail)?|icloud|gmx|zoho|mail)\.(com|me|net)\b/i, 22,'r','Uses a personal email address','Real corporate recruiters email from the company domain, not Gmail, Outlook, Yahoo and similar.','b'],
+  [/(purchase|buy|order)\s+(your\s+)?(equipment|laptop|computer|software|supplies)|equipment (reimburse|vendor)|send (you )?a check|deposit (the|a) check|cashier'?s check|gift ?cards?|bitcoin|crypto|usdt|zelle|cash ?app|venmo|wire (the )?(funds|money)/i, 35,'r','Mentions buying equipment, checks, gift cards, crypto or payment apps','This is the classic fake check / equipment-purchase scam. A real employer never asks you to pay or move money.','m'],
+  [/\b(ssn|social security( number)?|bank (account|details|info)|routing number|account number|driver'?s licen[sc]e|passport (copy|scan)|copy of your id|date of birth)\b/i, 30,'r','Asks for sensitive personal or bank information','No legitimate recruiter needs your SSN, ID or bank details before a signed offer and official onboarding.','m'],
+  [/(interview|assessment)\s+(will be|is)?\s*(conducted\s+)?(via|over|through|on)\s+(chat|text|teams chat|skype chat|telegram|whatsapp|google chat)|text[- ]based interview|chat interview|online chat interview/i, 25,'r','Interview by chat or text only','Real interviews happen by phone or video with identifiable people.','m'],
+  [/(training|onboarding|registration|application|processing|background check|certification) fee|pay (for|a) (training|the fee)|small fee|refundable deposit/i, 30,'r','Asks you to pay a fee','Legitimate employers do not charge candidates fees.','m'],
+  [/(no (interview|experience) (needed|required)|hired immediately|offer (is )?ready|start (immediately|tomorrow|today)|guaranteed (job|position|income)|you('ve| have) been (selected|shortlisted|hired))/i, 18,'r','Offer is too fast or too easy','Being "selected" or hired without a real process is a strong scam sign.','m'],
+  [/(\$\s?\d{2,3}\s?(\/|per)\s?(hr|hour)|earn up to|\$\d{1,3},?\d{3}\s?(per|\/|a)\s?week|weekly pay|daily pay|work (just|only) \d+ hours)/i, 12,'a','Pay is emphasized up front','High pay for little work, or pay offered in the first message, is a common lure.','m'],
+  [/(urgent|asap|immediately|respond within|limited (slots|positions|time)|act fast|today only|before (the )?end of (the )?day)/i, 10,'a','Creates urgency','Pressure to move fast is used to keep you from checking things.','m'],
+  [/\b(dear (candidate|applicant|sir|madam|job seeker)|dear beloved|kindly|do the needful|revert back)\b/i, 8,'a','Generic or odd phrasing','Mass-sent scam messages are often generic and don\'t use your name or mention your actual background.','m'],
+  [/(data entry|remote assistant|personal assistant|package (handler|forwarding|reshipping)|reshipping|mystery shopper|payment processing agent|virtual assistant)/i, 15,'a','Role type often used in scams','Data entry, reshipping, personal assistant and "payment processing" roles are frequent scam fronts.','m'],
+  [/(bit\.ly|tinyurl|t\.co\/|cutt\.ly|rb\.gy|forms\.gle|docs\.google\.com\/forms|wa\.me|t\.me\/)/i, 14,'a','Uses short links, Google Forms, or chat links','Real applications go through the company\'s own careers portal.','m'],
+  [/(independent|freelance|self[- ]employed)\s+(recruiter|talent|hr)|talent (acquisition )?consultant\s*$|hr manager at (a|an) /i, 6,'a','Vague or independent recruiter title','Not always a problem since agency recruiters are real, but verify the agency.','p'],
+];
+
+function connectionsCount(t){
+  const m = t.match(/(\d[\d,]*)\+?\s*connections/i);
+  if(!m) return null;
+  return parseInt(m[1].replace(/,/g,''),10) + (/500\+/.test(m[0])?1:0);
+}
+function followers(t){
+  const m=t.match(/(\d[\d,.]*\s?[KkMm]?)\s*followers/); return m?m[1]:null;
+}
+function domainOf(s){const m=s.match(/@([\w-]+(\.[\w-]+)+)/);return m?m[1].toLowerCase():null}
+
+const val = id => document.getElementById(id).value.trim();
+const esc = s => s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const enc = encodeURIComponent;
+
+const ATS = /(greenhouse\.io|lever\.co|myworkdayjobs\.com|workday\.com|icims\.com|smartrecruiters\.com|ashbyhq\.com|jobvite\.com|taleo\.net|successfactors\.(com|eu)|oraclecloud\.com|bamboohr\.com|workable\.com|recruitee\.com|jazzhr\.com|applytojob\.com|dayforcehcm\.com|ultipro\.com|paylocity\.com|adp\.com|linkedin\.com|indeed\.com|glassdoor\.com)$/i;
+const RISKY_HOST = /(bit\.ly|tinyurl\.com|t\.co|cutt\.ly|rb\.gy|is\.gd|ow\.ly|forms\.gle|docs\.google\.com|drive\.google\.com|sites\.google\.com|wa\.me|t\.me|telegram\.me|jotform\.com|typeform\.com|wixsite\.com|weebly\.com|blogspot\.com|carrd\.co|notion\.site)$/i;
+
+function parseHost(link){
+  if(!link) return null;
+  try{ return new URL(/^https?:\/\//i.test(link)?link:'https://'+link).hostname.replace(/^www\./,'').toLowerCase(); }
+  catch(e){ return null; }
+}
+function companyKey(c){ return c.toLowerCase().replace(/\b(inc|llc|ltd|corp|corporation|co|company|group|bank|financial|the)\b/g,'').replace(/[^a-z0-9]/g,''); }
+
+// Job-specific checks: returns [{pts,lvl,title,why}]
+function jobFlags(){
+  const out=[]; const add=(pts,lvl,title,why)=>out.push({pts,lvl,title,why});
+  const title=val('jobtitle'), company=val('company'), pay=val('jobpay'), link=val('joblink'), desc=val('jobdesc');
+  const host=parseHost(link);
+  if(link){
+    if(!host) add(8,'a','Job link looks malformed','Double-check the address before opening it.');
+    else if(RISKY_HOST.test(host)) add(25,'r',`Application link goes to ${host}`,'Real companies use their own careers site or a hiring system such as Workday or Greenhouse, not short links, Google Forms, chat links or free website builders.');
+    else if(ATS.test(host)) add(-8,'g',`Link uses a known hiring platform (${host})`,'Make sure the company name in the URL is the real employer, since scammers sometimes post on real job sites too.');
+    else {
+      const key=companyKey(company); const root=host.split('.').slice(-2,-1)[0]||'';
+      if(key && root && (key.includes(root)||root.includes(key))){
+        if(/(career|jobs|hiring|hr|recruit|apply)[-.]?|[-.](career|jobs|hiring|hr|recruit)/.test(host.split('.').slice(-2).join('.')))
+          add(22,'r',`Domain ${host} looks like a lookalike`,'Words like "careers", "hr" or "jobs" glued onto the company name (e.g. company-careers.com) are a common trick. Compare it with the real site.');
+        else add(-10,'g',`Link is on the company's domain (${host})`,'Still compare it against the company site you find through a search.');
+      } else if(company) add(18,'r',`Link domain (${host}) doesn't match ${company}`,'Use the WHOIS lookup below to check how old this site is. Scam sites are often only days or weeks old.');
+      else add(6,'a',`Unfamiliar job site (${host})`,'Use the WHOIS and ScamAdviser lookups below.');
+    }
+  }
+  const p = pay.replace(/,/g,'');
+  const hr = p.match(/\$?\s?(\d{2,4}(?:\.\d+)?)\s*(\/|per|an?)\s*(hr|hour)/i);
+  const wk = p.match(/\$?\s?(\d{3,5})\s*(\/|per|a)\s*(wk|week)/i);
+  const entry = /(assistant|data entry|clerk|customer service|receptionist|admin|processor|reshipp|package|mystery shopper|entry[- ]level)/i.test(title+' '+desc);
+  if(hr && entry && parseFloat(hr[1])>=40) add(20,'r',`Pay is too high for the role ($${hr[1]}/hr)`,'Pay well above market for entry-level remote work is a classic lure. Compare it on Glassdoor below.');
+  if(wk && entry && parseInt(wk[1])>=1500) add(18,'r',`Weekly pay is too high for the role ($${wk[1]}/week)`,'Compare the salary for this title with the links below.');
+  if(desc){
+    if(desc.length<300) add(8,'a','Job description is very short','Real postings usually list responsibilities, qualifications and benefits.');
+    if(!/(requirement|qualification|experience|degree|skills|you (have|bring)|what you)/i.test(desc)) add(10,'a','No real requirements listed','Scam jobs rarely ask for specific experience, because they want anyone to apply.');
+    if(company && !desc.toLowerCase().includes(company.toLowerCase().split(' ')[0])) add(6,'a',`Description never names ${company}`,'Generic descriptions can be copied and reused for fake postings.');
+    if(/(benefits|401\(?k|pto|health insurance|equal opportunity|eeo)/i.test(desc)) add(-4,'g','Mentions standard benefits or EEO language','Common in real corporate postings, though easy to copy.');
+  }
+  return out;
+}
+
+function renderLookup(){
+  const title=val('jobtitle'), company=val('company'), loc=val('joblocation'), link=val('joblink');
+  const box=document.getElementById('lookupOut');
+  if(!title && !company && !link){ box.innerHTML='<p class="hint" style="margin-top:10px">Enter at least the job title or company first.</p>'; return; }
+  const host=parseHost(link);
+  const q=[title,company].filter(Boolean).join(' ');
+  const chip=(href,label,note)=>`<a class="chip" href="${href}" target="_blank" rel="noopener noreferrer"><span>${esc(label)}<br><small>${esc(note)}</small></span><span class="arr">↗</span></a>`;
+  let h='<div class="lk">';
+  h+='<h3>Does this job really exist?</h3>';
+  if(company) h+=chip(`https://www.google.com/search?q=${enc('"'+company+'" official careers site')}`,`Find ${company}'s official careers site`,'Start here, then search for the title on their own site');
+  if(q) h+=chip(`https://www.google.com/search?q=${enc((title?'"'+title+'" ':'')+(company?'"'+company+'" ':'')+'careers OR jobs')}`,`Google: "${title||''}" at ${company||'any company'}`,'Look for the same posting on the company domain');
+  h+=chip(`https://www.linkedin.com/jobs/search/?keywords=${enc(q)}${loc?'&location='+enc(loc):''}`,'Search LinkedIn Jobs','Check whether the posting comes from the company\'s own page');
+  h+=chip(`https://www.indeed.com/jobs?q=${enc(q)}${loc?'&l='+enc(loc):''}`,'Search Indeed','Compare the title, location and pay');
+  h+=chip(`https://www.glassdoor.com/Search/results.htm?keyword=${enc(q)}`,'Search Glassdoor','Postings, reviews and interview reports');
+  h+='<h3>Is the pay realistic?</h3>';
+  if(title) h+=chip(`https://www.google.com/search?q=${enc(title+(company?' '+company:'')+' salary'+(loc?' '+loc:''))}`,`Typical salary for ${title}`,'Compare with what the recruiter offered');
+  if(title) h+=chip(`https://www.levels.fyi/?search=${enc(title)}`,'Levels.fyi','Salary data for tech and finance roles');
+  if(company){
+    h+='<h3>Is anyone reporting scams?</h3>';
+    h+=chip(`https://www.google.com/search?q=${enc('"'+company+'" recruiter scam OR fake job offer')}`,`"${company}" recruiter scam reports`,'Many big companies post warnings about people impersonating them');
+    h+=chip(`https://www.google.com/search?q=${enc('"'+company+'" recruitment fraud warning')}`,`${company} recruitment fraud notice`,'Official notice explaining how they really contact candidates');
+    h+=chip(`https://www.linkedin.com/search/results/people/?keywords=${enc(company+' recruiter')}`,`Real recruiters at ${company}`,'See whether this recruiter shows up as a current employee');
+  }
+  if(host){
+    h+='<h3>Check the link they sent</h3>';
+    h+=chip(`https://who.is/whois/${enc(host)}`,`WHOIS: when was ${host} created?`,'A site created in the last few months is a big red flag');
+    h+=chip(`https://www.scamadviser.com/check-website/${enc(host)}`,`ScamAdviser: ${host}`,'Trust score and reports from other users');
+    h+=chip(`https://transparencyreport.google.com/safe-browsing/search?url=${enc(host)}`,'Google Safe Browsing check','Flags known phishing and malware sites');
+  }
+  h+='</div>';
+  box.innerHTML=h;
+}
+
+function analyze(){
+  const p = document.getElementById('profile').value;
+  const m = document.getElementById('msg').value + '\n' + document.getElementById('jobdesc').value;
+  const company = document.getElementById('company').value.trim();
+  const both = p+'\n'+m;
+  const hasJob = ['jobtitle','company','jobpay','joblink','jobdesc'].some(id=>val(id));
+  if(!p.trim() && !m.trim() && !hasJob && !Object.values(answers).some(v=>v&&v!=='unk')){
+    document.getElementById('out').innerHTML = `<div class="verdict v-none"><div class="big">Nothing to check yet</div><div>Paste the profile or message first.</div></div>`;
+    return;
+  }
+  let score = 20; const flags=[];
+  const add=(pts,lvl,title,why)=>{score+=pts;flags.push({lvl,title,why,pts});};
+
+  RULES.forEach(([re,pts,lvl,title,why,src])=>{
+    const text = src==='p'?p:src==='m'?m:both;
+    if(text && re.test(text)) add(pts,lvl,title,why);
+  });
+
+  // Profile structure heuristics
+  if(p.trim()){
+    const c = connectionsCount(p);
+    if(c!==null){
+      if(c<100) add(18,'r',`Very few connections (${c})`,'Real recruiters network heavily. Fewer than 100 connections is a strong warning.');
+      else if(c<300) add(8,'a',`Low connection count (${c})`,'Lower than typical for an active recruiter.');
+      else if(c>=500) add(-8,'g','500+ connections','A large network is harder to fake, though not impossible.');
+    }
+    const expCount = (p.match(/\b(19|20)\d{2}\s*[-–]\s*((19|20)\d{2}|present)/gi)||[]).length;
+    if(!/experience/i.test(p) || expCount===0) add(12,'a','Little or no work history','Fake profiles often have one job, or none, with no dates.');
+    else if(expCount>=3) add(-8,'g','Detailed work history','Several dated roles suggest a real career.');
+    if(/education/i.test(p) && expCount>=2) add(-3,'g','Has education and history listed','Fuller profiles are more often real.');
+    if(/(recommendations?\s+received|recommended\s+\w+)/i.test(p)) add(-6,'g','Has recommendations','Recommendations from other people are hard to fake at scale.');
+    const f = followers(p); if(f && /k|m/i.test(f)) add(-4,'g',`Large following (${f})`,'');
+  }
+
+  // Company email match
+  if(company){
+    const d = domainOf(both);
+    const key = company.toLowerCase().replace(/[^a-z0-9]/g,'');
+    if(d && !/(gmail|yahoo|outlook|hotmail|aol|proton|icloud|gmx|zoho|mail)\./.test(d)){
+      const root = d.split('.').slice(-2,-1)[0];
+      if(key && root && (key.includes(root)||root.includes(key))) add(-15,'g',`Email domain matches ${company} (${d})`,'Still confirm the address on the company\'s site, since lookalike domains exist.');
+      else add(20,'r',`Email domain (${d}) doesn't match ${company}`,'Lookalike or unrelated domains are a common trick, such as company-careers.com or companyhr.net.');
+    }
+    if(p.trim() && !p.toLowerCase().replace(/[^a-z0-9]/g,'').includes(key))
+      add(10,'a',`Profile doesn't mention ${company}`,'They claim to recruit for this company, but it isn\'t in their profile.');
+  }
+
+  jobFlags().forEach(f=>{score+=f.pts;flags.push(f);});
+  if(hasJob) renderLookup();
+
+  // Checklist answers
+  QUESTIONS.forEach(q=>{
+    const a = answers[q.id];
+    if(a==='yes'){ score+=q.yes; if(q.yesNote) flags.push({lvl:q.yesNote[0],title:q.yesNote[1],why:q.yesNote[2],pts:q.yes}); }
+    if(a==='no'){ score+=q.no; if(q.noNote) flags.push({lvl:q.noNote[0],title:q.noNote[1],why:q.noNote[2],pts:q.no}); }
+  });
+
+  score = Math.max(0,Math.min(100,Math.round(score)));
+  const reds = flags.filter(f=>f.lvl==='r').length;
+  let cls,label,advice,color;
+  if(score>=60 || reds>=3){cls='v-red';label='High risk: likely fake';advice='Don\'t reply with personal information. Verify through the company directly, then report the profile.';color='var(--red)';}
+  else if(score>=35 || reds>=1){cls='v-amber';label='Caution: verify before engaging';advice='There are some warning signs. Do the 5-minute checks below before sharing anything.';color='var(--amber)';}
+  else {cls='v-green';label='Looks legitimate so far';advice='No major red flags found. Still, confirm the role on the company\'s careers site before sharing documents.';color='var(--green)';}
+
+  const order={r:0,a:1,g:2};
+  flags.sort((x,y)=>order[x.lvl]-order[y.lvl]);
+  const li = flags.map(f=>`<li class="f${f.lvl}"><b>${f.lvl==='g'?'✓':'⚠'} ${f.title}</b>${f.why?`<span>${f.why}</span>`:''}</li>`).join('');
+  document.getElementById('out').innerHTML = `
+    <div class="verdict ${cls}">
+      <div class="big">${label}</div>
+      <div class="meter"><div style="width:${score}%;background:${color}"></div></div>
+      <div style="font-size:13px">Risk score ${score}/100 · ${reds} red flag${reds===1?'':'s'}</div>
+      <div style="margin-top:8px;color:var(--ink)">${advice}</div>
+    </div>
+    <div class="card"><h2>What we found</h2>${li?`<ul class="f">${li}</ul>`:'<p class="hint">No specific signals detected. Add more text or answer the quick checks.</p>'}
+    <p class="small">This is a heuristic screen, not proof. A clean score doesn't guarantee someone is real, so always verify through the company itself.</p></div>`;
+  document.getElementById('out').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+document.getElementById('run').addEventListener('click',analyze);
+document.getElementById('lookup').addEventListener('click',renderLookup);
+document.getElementById('clear').addEventListener('click',()=>{
+  ['profile','msg','company','jobtitle','joblocation','jobpay','joblink','jobdesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('lookupOut').innerHTML='';
+  for(const k in answers) delete answers[k]; renderChecks();
+  document.getElementById('out').innerHTML=`<div class="verdict v-none"><div class="big">No check yet</div><div>Paste the profile and message, then press <b>Check recruiter</b>.</div></div>`;
+});
+renderChecks();
+</script>
+</body>
+</html>
